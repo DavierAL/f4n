@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.f4n"
+    namespace = "com.example.futbol"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.f4n"
+        applicationId = "com.example.futbol"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
