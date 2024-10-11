@@ -1,9 +1,12 @@
 package com.f4n.View
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,301 +15,255 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
-import com.f4n.R
+import com.example.futbol.R
 
 
 @Composable
-fun PlayerProfileScreen(player: PlayerData) {
+fun PlayerSearchScreen(
+    onBackClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(Color(0xFF161616))
     ) {
-        PlayerHeader(player)
-        PlayerStats(player)
-        LastMatchSection(player.lastMatch)
-        BottomNavigation()
+        SearchHeader(onBackClick)
+        FilterSection()
+        PlayerList()
     }
 }
 
 @Composable
-fun PlayerHeader(player: PlayerData) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        // Imagen del jugador con fondo oscuro
-        Box(
-            modifier = Modifier
-                .size(120.dp)
-                .clip(CircleShape)
-                .background(Color(0xFF262626))
-        ) {
-            AsyncImage(
-                model = R.drawable.harrykane,
-                contentDescription = "Player photo",
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // Nombre del jugador
-        Text(
-            text = player.name,
-            color = Color.White,
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
-        )
-
-        // Equipo
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            AsyncImage(
-                model = R.drawable.teamlogo,
-                contentDescription = "Team logo",
-                modifier = Modifier.size(24.dp)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = player.team,
-                color = Color.White,
-                fontSize = 16.sp
-            )
-        }
-    }
-}
-
-@Composable
-fun PlayerStats(player: PlayerData) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-    ) {
-        // Info básica
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            StatItem("NACIONALIDAD", player.nationality, showFlag = true)
-            StatItem("EDAD", "${player.birthDate}\n${calculateAge(player.birthDate)} AÑOS")
-            StatItem("ALTURA", player.height)
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Estadísticas principales
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            StatItem("PARTIDOS JUGADOS", player.gamesPlayed.toString())
-            StatItem("GOLES", player.goals.toString())
-            StatItem("ASISTENCIAS", player.assists.toString())
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Tarjetas
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            StatItem("TARJETAS AMARILLAS", player.yellowCards.toString(), Color.Yellow)
-            StatItem("TARJETAS ROJAS", player.redCards.toString(), Color.Red)
-        }
-    }
-}
-
-@Composable
-fun LastMatchSection(lastMatch: LastMatch) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        Text(
-            text = "ÚLTIMO PARTIDO",
-            color = Color.White,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Bold
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFF262626))
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column {
-                    Text(
-                        text = lastMatch.date,
-                        color = Color.White,
-                        fontSize = 14.sp
-                    )
-                    Text(
-                        text = "${lastMatch.score} ${lastMatch.opponent}",
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-
-                Row {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = "GOLES",
-                            color = Color.Gray,
-                            fontSize = 12.sp
-                        )
-                        Text(
-                            text = lastMatch.playerGoals.toString(),
-                            color = Color.White,
-                            fontSize = 16.sp
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.width(16.dp))
-
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = "MIN",
-                            color = Color.Gray,
-                            fontSize = 12.sp
-                        )
-                        Text(
-                            text = lastMatch.minutes.toString(),
-                            color = Color.White,
-                            fontSize = 16.sp
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.width(16.dp))
-
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Box(
-                            modifier = Modifier
-                                .size(40.dp)
-                                .background(Color(0xFF1E5128), CircleShape),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = lastMatch.rating.toString(),
-                                color = Color.White,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun BottomNavigation() {
+fun SearchHeader(onBackClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly
+            .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(onClick = {  }) {
+        IconButton(onClick = onBackClick) {
             Icon(
-                Icons.Default.Home,
-                contentDescription = "Home",
-                tint = Color.White
-            )
-        }
-        IconButton(onClick = { }) {
-            Icon(
-                Icons.Default.Person,
-                contentDescription = "Profile",
-                tint = Color.White
-            )
-        }
-        IconButton(onClick = {  }) {
-            Icon(
-                Icons.Default.ArrowBack,
+                imageVector = Icons.Default.ArrowBack,
                 contentDescription = "Back",
                 tint = Color.White
             )
         }
+
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .height(40.dp)
+                .background(
+                    color = Color(0xFF262626),
+                    shape = RoundedCornerShape(8.dp)
+                )
+                .padding(horizontal = 8.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = "Search",
+                    tint = Color.Gray
+                )
+
+                Text(
+                    text = "Erling Haaland",
+                    color = Color.White,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 8.dp)
+                )
+
+                IconButton(
+                    onClick = { /* Clear search */ }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Clear",
+                        tint = Color.Gray
+                    )
+                }
+            }
+        }
     }
 }
 
 @Composable
-fun StatItem(
-    label: String,
-    value: String,
-    color: Color = Color.White,
-    showFlag: Boolean = false
-) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+fun FilterSection() {
+    var selectedFilter by remember { mutableStateOf(FilterOption.ALL) }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text(
-            text = label,
-            color = Color.Gray,
-            fontSize = 12.sp
-        )
-        if (showFlag) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // Aquí irá la bandera
-                Text(
-                    text = value,
-                    color = color,
-                    fontSize = 16.sp
-                )
-            }
-        } else {
-            Text(
-                text = value,
-                color = color,
-                fontSize = 16.sp
+        FilterOption.values().forEach { filter ->
+            FilterChip(
+                filter = filter,
+                isSelected = selectedFilter == filter,
+                onSelected = { selectedFilter = filter }
             )
         }
     }
 }
 
-// Función auxiliar para calcular la edad
-fun calculateAge(birthDate: String): Int {
-    // Implementar lógica para calcular edad
-    return 0
+@Composable
+fun FilterChip(
+    filter: FilterOption,
+    isSelected: Boolean,
+    onSelected: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(16.dp))
+            .background(
+                if (isSelected) Color(0xFF3D3D3D)
+                else Color(0xFF262626)
+            )
+            .clickable(onClick = onSelected)
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+    ) {
+        Text(
+            text = filter.name.lowercase()
+                .replaceFirstChar { it.uppercase() },
+            color = if (isSelected) Color.White else Color.Gray,
+            fontSize = 14.sp
+        )
+    }
+}
+
+@Composable
+fun PlayerList() {
+    val players = remember {
+        listOf(
+            Player(
+                id = 1,
+                name = "Erling Haaland",
+                imageUrl = "haaland_image",
+                team = "Manchester City",
+                teamLogo = "city_logo",
+                followers = "206k",
+                category = "soccer"
+            ),
+            Player(
+                id = 2,
+                name = "Harry Kane",
+                imageUrl = "kane_image",
+                team = "Bayern München",
+                teamLogo = "bayern_logo",
+                followers = "206k",
+                category = "soccer"
+            )
+        )
+    }
+
+    LazyColumn(
+        modifier = Modifier.fillMaxWidth(),
+        contentPadding = PaddingValues(vertical = 8.dp)
+    ) {
+        items(players) { player ->
+            PlayerListItem(player)
+        }
+    }
+}
+
+@Composable
+fun PlayerListItem(player: Player) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Player Image
+        Image(
+            painter = painterResource(id = R.drawable.rodrygo),
+            contentDescription = null,
+            modifier = Modifier
+                .size(40.dp)
+                .clip(CircleShape),
+            contentScale = ContentScale.Crop
+        )
+
+        // Player Info
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = 12.dp)
+        ) {
+            Text(
+                text = player.name,
+                color = Color.White,
+                fontSize = 16.sp
+            )
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.vini_jr),
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp)
+                )
+
+                Spacer(modifier = Modifier.width(4.dp))
+
+                Text(
+                    text = player.team,
+                    color = Color.Gray,
+                    fontSize = 14.sp
+                )
+            }
+        }
+
+        // Followers
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Default.Person,
+                contentDescription = null,
+                tint = Color.Gray,
+                modifier = Modifier.size(16.dp)
+            )
+
+            Spacer(modifier = Modifier.width(4.dp))
+
+            Text(
+                text = player.followers,
+                color = Color.Gray,
+                fontSize = 14.sp
+            )
+        }
+    }
 }

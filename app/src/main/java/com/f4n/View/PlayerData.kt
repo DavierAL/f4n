@@ -22,3 +22,19 @@ data class LastMatch(
     val minutes: Int,
     val rating: Double
 )
+
+// PlayerSearchData.kt
+data class Player(
+    val id: Int,
+    val name: String,
+    val imageUrl: String,
+    val team: String,
+    val teamLogo: String,
+    val followers: String,
+    val category: String
+)
+
+// FilterOption.kt
+enum class FilterOption {
+    ALL, TEAM, PLAYER, TOURNAMENT
+}

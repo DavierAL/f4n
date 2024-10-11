@@ -146,10 +146,3 @@ fun CreateAccountScreen(modifier: Modifier = Modifier) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun CreateAccountScreenPreview() {
-    FutbolTheme {
-        CreateAccountScreen()
-    }
-}

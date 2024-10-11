@@ -4,8 +4,13 @@ import android.os.Bundle
 import com.f4n.View.PlayerProfileScreen
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.navigation.compose.rememberNavController
 import com.f4n.View.LastMatch
 import com.f4n.View.PlayerData
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import com.f4n.View.infoTeamView
+import com.f4n.View.loginView
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,5 +39,22 @@ class MainActivity : ComponentActivity() {
 
             PlayerProfileScreen(playerData)
         }
+
+        setContent {
+            val navController = rememberNavController()
+
+            NavHost(navController = navController, startDestination = "login") {
+                composable("login") {
+                    loginView(navController)
+                }
+                composable("infoEquipo") {
+                    infoTeamView()
+                }
+            }
+        }
+    }
+
+    private fun composable(s: String, function: () -> Unit) {
+
     }
 }
