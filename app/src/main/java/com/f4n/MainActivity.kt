@@ -1,47 +1,38 @@
 package com.f4n
 
 import android.os.Bundle
+import com.f4n.View.PlayerProfileScreen
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.f4n.ui.theme.F4nTheme
+import com.f4n.View.LastMatch
+import com.f4n.View.PlayerData
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
-            F4nTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
+            val playerData = PlayerData(
+                name = "Harry Kane",
+                team = "FC BAYERN MÜNCHEN",
+                nationality = "Inglaterra",
+                birthDate = "28 JUL 1993",
+                height = "188 CM",
+                gamesPlayed = 542,
+                goals = 378,
+                assists = 83,
+                yellowCards = 55,
+                redCards = 0,
+                lastMatch = LastMatch(
+                    date = "17 SEP",
+                    opponent = "Manchester United",
+                    score = "4-2",
+                    playerGoals = 2,
+                    minutes = 90,
+                    rating = 9.9
+                )
+            )
+
+            PlayerProfileScreen(playerData)
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    F4nTheme {
-        Greeting("Android")
     }
 }
